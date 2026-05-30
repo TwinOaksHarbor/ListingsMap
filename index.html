@@ -299,6 +299,9 @@ searchEl.addEventListener('input',function(){
     acEl.querySelectorAll('.ac-item').forEach(function(el){
       el.addEventListener('click',function(){selectName(this.dataset.name);});
     });
+    acEl.querySelectorAll('.ac-item').forEach(function(el){
+      el.addEventListener('click',function(){selectName(this.dataset.name);});
+    });
     acEl.style.display='block';
   } else {
     acEl.style.display='none';
