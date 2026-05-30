@@ -349,61 +349,7 @@ searchEl.addEventListener('input',function(){
     acEl.querySelectorAll('.ac-item').forEach(function(el){
       el.addEventListener('click',function(){selectName(this.dataset.name);});
     });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.querySelectorAll('.ac-item').forEach(function(el){
-      el.addEventListener('click',function(){selectName(this.dataset.name);});
-    });
-    acEl.style.display='block';
+acEl.style.display='block';
   } else {
     acEl.style.display='none';
   }
@@ -503,15 +449,18 @@ function closeDrawer() {
   document.getElementById('panel').classList.remove('drawer-open');
 }
 
-// Patch showPanel to show float button on mobile
-const _origShowPanel = showPanel;
-function showPanel(props) {
-  _origShowPanel(props);
-  if (window.innerWidth <= 640) {
-    document.getElementById('view-details-btn').classList.add('visible');
-    document.getElementById('panel').classList.remove('drawer-open');
+// Mobile: show float button when parcel clicked
+document.addEventListener('click', function(e) {
+  if (window.innerWidth > 640) return;
+  if (e.target.closest('#map')) {
+    setTimeout(function() {
+      const content = document.getElementById('panel-content').innerHTML;
+      if (!content.includes('Click any parcel')) {
+        document.getElementById('view-details-btn').classList.add('visible');
+      }
+    }, 100);
   }
-}
+});
 </script>
 <button id="view-details-btn" onclick="openDrawer()">📋 View Details</button>
 </body>
