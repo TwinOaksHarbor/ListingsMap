@@ -44,6 +44,104 @@ body{font-family:Arial,sans-serif;display:flex;flex-direction:column;height:100v
 #status-bar{background:#eee;padding:3px 12px;font-size:11px;color:#555;border-top:1px solid #ccc;flex-shrink:0}
 .for-sale-panel{background:#F3E5F5;border:1px solid #9C27B0;border-radius:6px;padding:10px;margin-top:8px}
 .for-sale-panel .sec-title{color:#6A1B9A}
+/* === MOBILE LAYOUT === */
+@media (max-width: 640px) {
+  #header {
+    flex-wrap: nowrap;
+    padding: 6px 10px;
+    gap: 8px;
+    align-items: center;
+  }
+  #header h1 { font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+
+  #search-wrap { flex: 1; min-width: 0; max-width: none; }
+  #search { font-size: 14px; padding: 6px 10px; }
+
+  /* Move clear btn inline with search */
+  #clear-btn { flex-shrink: 0; }
+
+  /* Legend: single scrollable row */
+  #legend {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 10px;
+    flex-shrink: 0;
+    order: 10; /* push below search row */
+  }
+  .leg-box { width: 11px; height: 11px; }
+
+  /* Header becomes two rows: [title + search + clear] then [legend] */
+  #header { flex-wrap: wrap; }
+  #header h1, #search-wrap, #clear-btn { order: 1; }
+  #legend { order: 2; }
+
+  /* Map full screen */
+  #main { position: relative; }
+  #map { width: 100%; }
+
+  /* Panel hidden by default — slides up as drawer */
+  #panel {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 70vh;
+    width: 100% !important;
+    border-left: none;
+    border-top: 2px solid #1F4E79;
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  }
+  #panel.drawer-open {
+    transform: translateY(0);
+  }
+
+  /* Close button in panel header */
+  #panel-close {
+    display: inline-block;
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.8;
+  }
+  #panel-header {
+    display: flex;
+    align-items: center;
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* Floating "View Details" button */
+  #view-details-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    background: #1F4E79;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+    white-space: nowrap;
+  }
+  #view-details-btn.visible { display: block; }
+}
+
+/* Desktop: hide close button and float button */
+@media (min-width: 641px) {
+  #panel-close { display: none; }
+  #view-details-btn { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -53,7 +151,7 @@ body{font-family:Arial,sans-serif;display:flex;flex-direction:column;height:100v
     <input id="search" type="text" placeholder="Search lot (e.g. 18-3)..." autocomplete="off">
     <div id="autocomplete"></div>
   </div>
-  <button onclick="clearSearch()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:12px;white-space:nowrap">&#10005; Clear</button>
+  <button id="clear-btn" onclick="clearSearch()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:12px;white-space:nowrap">&#10005; Clear</button>
   <div id="legend">
     <div class="leg"><div class="leg-box" style="background:#2196F3"></div>Standard</div>
     <div class="leg"><div class="leg-box" style="background:#808080"></div>Park Property</div>
@@ -67,7 +165,7 @@ body{font-family:Arial,sans-serif;display:flex;flex-direction:column;height:100v
 <div id="main">
   <div id="map"></div>
   <div id="panel">
-   <div id="panel-header">Parcel Details</div>
+   <div id="panel-header">Parcel Details <span id="panel-close" onclick="closeDrawer()">✕</span></div>
     <div id="panel-content"><p class="empty">Click any parcel to view details.<br><br>Use the search to find an owner and highlight all their lots.</p></div>
     <div id="status-bar">1398 parcels loaded</div>
   </div>
@@ -302,6 +400,9 @@ searchEl.addEventListener('input',function(){
     acEl.querySelectorAll('.ac-item').forEach(function(el){
       el.addEventListener('click',function(){selectName(this.dataset.name);});
     });
+    acEl.querySelectorAll('.ac-item').forEach(function(el){
+      el.addEventListener('click',function(){selectName(this.dataset.name);});
+    });
     acEl.style.display='block';
   } else {
     acEl.style.display='none';
@@ -394,6 +495,24 @@ function clearSearch(){
   clearSelection();
   try{map.fitBounds(geoLayer.getBounds(),{padding:[20,20]});}catch(e){}
 }
+function openDrawer() {
+  document.getElementById('panel').classList.add('drawer-open');
+  document.getElementById('view-details-btn').classList.remove('visible');
+}
+function closeDrawer() {
+  document.getElementById('panel').classList.remove('drawer-open');
+}
+
+// Patch showPanel to show float button on mobile
+const _origShowPanel = showPanel;
+function showPanel(props) {
+  _origShowPanel(props);
+  if (window.innerWidth <= 640) {
+    document.getElementById('view-details-btn').classList.add('visible');
+    document.getElementById('panel').classList.remove('drawer-open');
+  }
+}
 </script>
+<button id="view-details-btn" onclick="openDrawer()">📋 View Details</button>
 </body>
 </html>
