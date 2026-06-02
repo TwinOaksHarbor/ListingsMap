@@ -154,6 +154,7 @@ body{font-family:Arial,sans-serif;display:flex;flex-direction:column;height:100v
   <button id="clear-btn" onclick="clearSearch()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:12px;white-space:nowrap">&#10005; Clear</button>
   <div id="legend">
     <div class="leg"><div class="leg-box" style="background:#2196F3"></div>Standard</div>
+    <div class="leg"><div class="leg-box" style="background:#1565C0"></div>Multipurpose Lot</div>
     <div class="leg"><div class="leg-box" style="background:#808080"></div>Park Property</div>
     <div class="leg"><div class="leg-box" style="background:#9C27B0"></div>Member For Sale</div>
     <div class="leg"><div class="leg-box" style="background:#FF9800"></div>County For Sale</div>
@@ -186,6 +187,7 @@ function getColor(p, highlighted){
   if(p.color==='tax_sale_txcp') return '#009688';
   if(p.color==='county_sale')   return '#FF9800';
   if(p.color==='member_sale')   return '#9C27B0';
+  if(p.lot_type==='Multipurpose Lot') return '#1565C0';
   return '#2196F3';
 }
 
@@ -292,9 +294,10 @@ function namesMatch(a, b){
       <div class="field"><label>Legal Description</label><span>${val(p.legal)}</span></div>
       <div class="field"><label>Acres</label><span>${val(p.acres)}</span></div>
     </div>
-    <div class="section">
+     <div class="section">
       <div class="sec-title">Lots in This Parcel</div>
       <div>${lots||'<span style="color:#888;font-size:11px">None parsed</span>'}</div>
+      ${p.lot_type?`<div style="margin-top:6px;font-size:11px"><label style="color:#888">Lot Type:</label> <span style="font-weight:600">${p.lot_type}</span></div>`:''}
     </div>
     ${p.compliance?'<div class="section"><div>'+badge('VIOLATION','bp')+(p.compliance_note?' &mdash; '+p.compliance_note:'')+'</div></div>':''}
   `;
