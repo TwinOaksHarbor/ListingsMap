@@ -233,6 +233,7 @@ function showPanel(p){
         <div class="field"><label>Asking Price</label><span>${price}</span></div>
         ${p.listing_road?'<div class="field"><label>Road</label><span>'+p.listing_road+'</span></div>':''}
         ${amenities?'<div class="field"><label>Amenities</label><div>'+amenities+'</div></div>':''}
+        ${p.listing_notes?'<div class="field"><label>Notes</label><span style="font-style:italic">'+p.listing_notes+'</span></div>':''}
         ${p.listing_contact?'<div class="field"><label>Contact</label><span>'+p.listing_contact+'</span></div>':''}
       </div>`;
   } else if(p.color==='county_sale'){
