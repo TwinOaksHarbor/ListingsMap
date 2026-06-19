@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Twin Oaks Harbor — Admin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #1a2a3a;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 360px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    text-align: center;
+  }
+  .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2a3a;
+    margin-bottom: 4px;
+  }
+  .sub {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 32px;
+  }
+  label {
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+  }
+  input[type=password] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=password]:focus { border-color: #2980b9; }
+  button {
+    width: 100%;
+    padding: 13px;
+    background: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #1f6391; }
+  .error {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+  .footer {
+    margin-top: 24px;
+    font-size: 11px;
+    color: #bbb;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">⚓ Twin Oaks Harbor</div>
+  <div class="sub">Board Administration — Parcel Map</div>
+  <label for="pw">Password</label>
+  <input type="password" id="pw" placeholder="Enter admin password" autofocus>
+  <button onclick="login()">Sign In</button>
+  <div class="error" id="err">Incorrect password. Please try again.</div>
+  <div class="footer">Authorized board members only.</div>
+</div>
+
+<script>
+const HASH = "6355c92d88c7a1fa1348827304f2e7c428c82effcfdee8a20962492cd6a3f49f";
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest("SHA-256",
+    new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function login() {
+  const pw = document.getElementById("pw").value;
+  const h  = await sha256(pw);
+  if (h === HASH) {
+    sessionStorage.setItem("toh_admin_auth", h);
+    window.location.href = "map.html";
+  } else {
+    document.getElementById("err").style.display = "block";
+    document.getElementById("pw").value = "";
+    document.getElementById("pw").focus();
+  }
+}
+
+document.getElementById("pw").addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
+});
+</script>
+</body>
+</html>
