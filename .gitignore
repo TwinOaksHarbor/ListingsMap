@@ -1,0 +1,25 @@
+# Credentials and data
+credentials.json
+*.db
+*.csv
+*.xlsx
+*.docx
+tax_sale_list.pdf
+
+# Scripts and code
+*.py
+*.sql
+*.txt
+__pycache__/
+
+# Folders
+Archive/
+admin/
+backup*/
+db_backups/
+excel_export/
+map_backups/
+
+# Stray files
+10
+python
